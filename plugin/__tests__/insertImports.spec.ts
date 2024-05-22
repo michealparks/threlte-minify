@@ -4,9 +4,7 @@ import { insertImports } from '../insertImports'
 describe('insertImports', () => {
 	it('inserts new imports into a component with existing imports from the same module', () => {
 		const content = `
-      <script>
-        import { Mesh } from 'three'
-      </script>
+      import { Mesh } from 'three'
     `
 		const newImports = new Set(['Group', 'Material'])
 		const result = insertImports(newImports, content)
@@ -16,9 +14,7 @@ describe('insertImports', () => {
 
 	it('inserts new imports into a component with existing imports from different modules', () => {
 		const content = `
-      <script>
-        import { someOtherThing } from 'another-module'
-      </script>
+      import { someOtherThing } from 'another-module'
     `
 		const newImports = new Set(['Mesh', 'Group'])
 		const result = insertImports(newImports, content)
@@ -28,9 +24,7 @@ describe('insertImports', () => {
 
 	it('does not insert duplicate imports', () => {
 		const content = `
-      <script>
-        import { Mesh } from 'three'
-      </script>
+      import { Mesh } from 'three'
     `
 		const newImports = new Set(['Mesh', 'Group'])
 		const result = insertImports(newImports, content)
@@ -41,9 +35,7 @@ describe('insertImports', () => {
 
 	it('handles an empty set of new imports', () => {
 		const content = `
-      <script>
-        import { Mesh } from 'three'
-      </script>
+      import { Mesh } from 'three'
 	  `
 		const newImports = new Set<string>()
 		const result = insertImports(newImports, content)
@@ -52,9 +44,7 @@ describe('insertImports', () => {
 
 	it('should not insert imports if all new imports already exist in the component', () => {
 		const content = `
-      <script>
-        import { Mesh, Group } from 'three'
-      </script>
+      import { Mesh, Group } from 'three'
     `
 		const newImports = new Set(['Mesh', 'Group'])
 		const result = insertImports(newImports, content)
@@ -63,10 +53,8 @@ describe('insertImports', () => {
 
 	it.skip('renames imports if identifier already exists', () => {
 		const content = `
-      <script>
-        import { Mesh } from 'three'
-        import { Group } from 'some-other-lib'
-      </script>
+      import { Mesh } from 'three'
+      import { Group } from 'some-other-lib'
     `
 		const newImports = new Set(['Group'])
 		const result = insertImports(newImports, content)
@@ -76,9 +64,7 @@ describe('insertImports', () => {
 
 	it.skip('replaces an import type statement if identifier is duplicated', () => {
 		const content = `
-      <script>
-        import { Mesh, type Group } from 'three'
-      </script>
+      import { Mesh, type Group } from 'three'
     `
 		const newImports = new Set(['Group'])
 		const result = insertImports(newImports, content)

@@ -35,9 +35,7 @@ describe('extractImports', () => {
 
 	it('handles strange whitespace', () => {
 		const code = `
-      <script>
-        import {   Mesh   ,   Group ,  type Material   } from 'three'
-      </script>
+      import {   Mesh   ,   Group ,  type Material   } from 'three'
     `
 		const result = extractImports(code, 'three')
 		expect(result).toEqual(['Mesh', 'Group', 'type Material'])
@@ -45,9 +43,7 @@ describe('extractImports', () => {
 
 	it('handles imports with type and as keywords', () => {
 		const code = `
-      <script>
-        import { Mesh, type Material, Object3D as ThreeObject } from 'three'
-      </script>
+      import { Mesh, type Material, Object3D as ThreeObject } from 'three'
     `
 		const result = extractImports(code, 'three')
 		expect(result).toEqual(['Mesh', 'type Material', 'Object3D as ThreeObject'])
@@ -55,10 +51,8 @@ describe('extractImports', () => {
 
 	it('handles multiple import statements from the same module', () => {
 		const code = `
-      <script>
-        import { Mesh } from 'three'
-        import { Group, type Material } from 'three'
-      </script>
+			import { Mesh } from 'three'
+			import { Group, type Material } from 'three'
     `
 		const result = extractImports(code, 'three')
 		expect(result).toEqual(['Mesh', 'Group', 'type Material'])

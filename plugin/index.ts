@@ -30,9 +30,7 @@ export const threlteMinify = (): PluginOption => {
 		async transform(src, id) {
 			if (id.endsWith('.svelte') && hasDotComponent(src)) {
 				const { code, map } = await compile(src)
-				if (id.includes('Float')) {
-					console.log(code)
-				}
+
 				return {
 					code,
 					map: map?.toString()
@@ -40,6 +38,7 @@ export const threlteMinify = (): PluginOption => {
 			} else if (id.endsWith('/T.js')) {
 				const s = new MagicString(src, { filename: id })
 				s.overwrite(0, src.length, `export { default as T } from './T.svelte'`)
+
 				return {
 					code: s.toString(),
 					map: s.generateMap()
