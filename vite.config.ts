@@ -9,8 +9,6 @@ const plugins = [mkcert(), sveltekit()]
 plugins.unshift(threlteMinify())
 plugins.push({ ...threeMinifier(), enforce: 'pre' })
 
-console.log(plugins)
-
 export default defineConfig({
 	build: {
 		minify: true

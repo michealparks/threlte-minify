@@ -5,9 +5,6 @@ import { hasDotComponent } from './hasDotComponent'
 import { insertImports } from './insertImports'
 import { replaceDotComponents } from './replaceDotComponents'
 
-const svelteFileRegex = /\.(svelte)$/
-const typescriptFileRegex = /\.(js)$/
-
 const imports = new Set<string>()
 
 export const compile = async (source: string) => {
@@ -31,20 +28,21 @@ export const threlteMinify = (): PluginOption => {
 		name: 'threlte-minify',
 		enforce: 'pre',
 		async transform(src, id) {
-			if (svelteFileRegex.test(id) && hasDotComponent(src)) {
+			if (id.endsWith('.svelte') && hasDotComponent(src)) {
 				const { code, map } = await compile(src)
+				if (id.includes('Float')) {
+					console.log(code)
+				}
 				return {
 					code,
 					map: map?.toString()
 				}
-			} else if (typescriptFileRegex.test(id)) {
-				if (id.endsWith('T.js')) {
-					const s = new MagicString(src, { filename: id })
-					s.overwrite(0, src.length, `export { default as T } from './T.svelte'`)
-					return {
-						code: s.toString(),
-						map: s.generateMap()
-					}
+			} else if (id.endsWith('/T.js')) {
+				const s = new MagicString(src, { filename: id })
+				s.overwrite(0, src.length, `export { default as T } from './T.svelte'`)
+				return {
+					code: s.toString(),
+					map: s.generateMap()
 				}
 			}
 		}

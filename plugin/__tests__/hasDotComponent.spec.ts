@@ -2,29 +2,28 @@ import { describe, it, expect } from 'vitest'
 import { hasDotComponent } from '../hasDotComponent'
 
 describe('hasDotComponent', () => {
-	it('should return true when the code contains a <T.Component>', () => {
+	it('returns true when the code contains a <T.>', () => {
 		const code = `
       <script></script>
-      <T.Component></T.Component>
+      <T.Mesh></T.Mesh>
     `
 		expect(hasDotComponent(code)).toBe(true)
 	})
 
-	it('should return true when the code contains multiple <T.Component> instances', () => {
+	it('returns true when the code contains multiple <T.> instances', () => {
 		const code = `
-      <T.ComponentOne></T.ComponentOne>
-      <div>Some content</div>
-      <T.ComponentTwo attribute="value"></T.ComponentTwo>
+      <T.Mesh></T.Mesh>
+      <T.Object3D attribute="value" {...$$restProps}></T.Object3D>
     `
 		expect(hasDotComponent(code)).toBe(true)
 	})
 
-	it('should return false when the code does not contain any <T.Component>', () => {
+	it('returns false when the code does not contain any <T.Component>', () => {
 		const code = ``
 		expect(hasDotComponent(code)).toBe(false)
 	})
 
-	it('should return false when the code contains <T> but not <T.Component>', () => {
+	it('should return false when the code contains <T> but not <T.>', () => {
 		const code = `
 			<T></T>
 			<T is={something}></T>

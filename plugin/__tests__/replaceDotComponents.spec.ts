@@ -20,10 +20,10 @@ describe('replaceDotComponents', () => {
 	})
 
 	it('handles components with attributes', () => {
-		const content = `<T.SomeClass attribute="value" />`
+		const content = `<T.SomeClass attribute="value" {...$$restProps}><slot /></T>`
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
-		expect(result.code).toBe(`<T is={SomeClass} attribute="value" />`)
+		expect(result.code).toBe(`<T is={SomeClass} attribute="value" {...$$restProps}><slot /></T>`)
 		expect(imports.has('SomeClass')).toBe(true)
 	})
 
@@ -43,11 +43,19 @@ describe('replaceDotComponents', () => {
 		expect(imports.size).toBe(0)
 	})
 
-	it('should handle an empty component', () => {
+	it('handles an empty component', () => {
 		const content = ``
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
 		expect(result.code).toBe(``)
+		expect(imports.size).toBe(0)
+	})
+
+	it.skip('handles import { x as y }', () => {
+		const content = `<C.SomeClass />`
+		const imports = new Set<string>()
+		const result = replaceDotComponents(imports, content)
+		expect(result.code).toBe(`<C is={SomeClass} />`)
 		expect(imports.size).toBe(0)
 	})
 })

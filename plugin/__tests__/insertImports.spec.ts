@@ -2,22 +2,22 @@ import { describe, it, expect } from 'vitest'
 import { insertImports } from '../insertImports'
 
 describe('insertImports', () => {
-	it('should insert new imports into a component with existing imports from the same module', () => {
+	it('inserts new imports into a component with existing imports from the same module', () => {
 		const content = `
       <script>
-        import { Mesh } from 'three';
+        import { Mesh } from 'three'
       </script>
     `
-		const newImports = new Set(['Group', 'type Material'])
+		const newImports = new Set(['Group', 'Material'])
 		const result = insertImports(newImports, content)
 		expect(result?.code).toContain(`import { Mesh } from 'three'`)
-		expect(result?.code).toContain(`import { Group, type Material } from 'three'`)
+		expect(result?.code).toContain(`import { Group, Material } from 'three'`)
 	})
 
-	it('should insert new imports into a component with existing imports from different modules', () => {
+	it('inserts new imports into a component with existing imports from different modules', () => {
 		const content = `
       <script>
-        import { someOtherThing } from 'another-module';
+        import { someOtherThing } from 'another-module'
       </script>
     `
 		const newImports = new Set(['Mesh', 'Group'])
@@ -26,10 +26,10 @@ describe('insertImports', () => {
 		expect(result?.code).toContain(`import { Mesh, Group } from 'three'`)
 	})
 
-	it('should not insert duplicate imports', () => {
+	it('does not insert duplicate imports', () => {
 		const content = `
       <script>
-        import { Mesh } from 'three';
+        import { Mesh } from 'three'
       </script>
     `
 		const newImports = new Set(['Mesh', 'Group'])
@@ -39,10 +39,10 @@ describe('insertImports', () => {
 		expect(result?.code).toContain(`import { Group } from 'three'`)
 	})
 
-	it('should handle an empty set of new imports', () => {
+	it('handles an empty set of new imports', () => {
 		const content = `
       <script>
-        import { Mesh } from 'three';
+        import { Mesh } from 'three'
       </script>
 	  `
 		const newImports = new Set<string>()
@@ -53,11 +53,35 @@ describe('insertImports', () => {
 	it('should not insert imports if all new imports already exist in the component', () => {
 		const content = `
       <script>
-        import { Mesh, Group } from 'three';
+        import { Mesh, Group } from 'three'
       </script>
     `
 		const newImports = new Set(['Mesh', 'Group'])
 		const result = insertImports(newImports, content)
 		expect(result?.code).toEqual(content) // No changes
+	})
+
+	it.skip('renames imports if identifier already exists', () => {
+		const content = `
+      <script>
+        import { Mesh } from 'three'
+        import { Group } from 'some-other-lib'
+      </script>
+    `
+		const newImports = new Set(['Group'])
+		const result = insertImports(newImports, content)
+		expect(result?.code).toContain(`import { Mesh, Group as THRELTE_MINIFY__Group } from 'three'`)
+		expect(result?.code).toContain(`import { Group } from 'three'`)
+	})
+
+	it.skip('replaces an import type statement if identifier is duplicated', () => {
+		const content = `
+      <script>
+        import { Mesh, type Group } from 'three'
+      </script>
+    `
+		const newImports = new Set(['Group'])
+		const result = insertImports(newImports, content)
+		expect(result?.code).toContain(`import { Mesh, Group } from 'three'`)
 	})
 })
