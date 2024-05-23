@@ -1,5 +1,5 @@
-import { extractExistingImports } from './extractExistingImports'
 import MagicString from 'magic-string'
+import { extractExistingImports } from './extractExistingImports.js'
 
 /**
  *

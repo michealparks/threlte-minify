@@ -1,6 +1,6 @@
 import { preprocess } from 'svelte/compiler'
-import { insertImports } from './insertImports'
-import { replaceDotComponents } from './replaceDotComponents'
+import { insertImports } from './insertImports.js'
+import { replaceDotComponents } from './replaceDotComponents.js'
 
 /**
  * @const {Set<string>}

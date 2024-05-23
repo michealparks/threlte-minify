@@ -1,6 +1,6 @@
 import MagicString from 'magic-string'
-import { hasDotComponent } from './hasDotComponent'
-import { compile } from './compile'
+import { hasDotComponent } from './hasDotComponent.js'
+import { compile } from './compile.js'
 
 /**
  *

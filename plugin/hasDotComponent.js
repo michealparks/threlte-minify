@@ -1,4 +1,4 @@
-import { stripScriptTags } from './stripScriptTags'
+import { stripScriptTags } from './stripScriptTags.js'
 
 /**
  *
