@@ -3,7 +3,7 @@
 An 🚧 experimental 🚧 vite plugin to produce better minification results when building a Threlte app.
 
 ```bash
-npm i -D threlte-minify
+npm i -D michealparks/threlte-minify
 ```
 
 ```ts
@@ -50,6 +50,6 @@ This allows more THREE components to be treeshaken.
 
 ## Risks
 
-This plugin modifies your code, and although all edge cases that would cause problems [are attempted to be covered](https://github.com/michealparks/threlte-minify/tree/main/plugin/__tests__), it is possible that there are some not accounted for.
+This plugin modifies your code. It breaks all the rules. It parses HTML with regex. Although it [attempts to cover edge cases](https://github.com/michealparks/threlte-minify/tree/main/plugin/__tests__), it is possible that there are some not accounted for.
 
 If you notice one of those, don't hesitate to open an issue or PR!
