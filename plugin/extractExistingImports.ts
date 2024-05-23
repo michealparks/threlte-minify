@@ -1,4 +1,4 @@
-export const extractImports = (code: string, moduleName: string): string[] => {
+export const extractExistingImports = (code: string, moduleName: string): string[] => {
 	const regex = new RegExp(`import \\{([^}]+)\\} from ['"]${moduleName}['"]`, 'g')
 	let match: RegExpExecArray | null = null
 	const imports = new Set<string>()

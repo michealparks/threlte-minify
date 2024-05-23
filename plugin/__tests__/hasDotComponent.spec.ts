@@ -31,4 +31,13 @@ describe('hasDotComponent', () => {
     `
 		expect(hasDotComponent(code)).toBe(false)
 	})
+
+	it('should return false when the code contains <T.> only in the script section', () => {
+		const code = `
+			<script>
+				const str = '<T.Mesh>'
+			</script>
+    `
+		expect(hasDotComponent(code)).toBe(false)
+	})
 })

@@ -54,6 +54,6 @@
 	console.log($$restProps)
 </script>
 
-<T is={new Group()} position={floatPosition} rotation={floatRotation} let:ref {...$$restProps}>
+<T is={Group} position={floatPosition} rotation={floatRotation} let:ref {...$$restProps}>
 	<slot {ref} />
 </T>

@@ -15,8 +15,9 @@ export const replaceDotComponents = (imports: Set<string>, content: string, file
 
 	while ((match = openTagRegex.exec(content)) !== null) {
 		const [, componentName] = match
-		imports.add(componentName)
-		replace(match, `<T is={${componentName}}`)
+		const taggedComponentName = `THRELTE_MINIFY__${componentName}`
+		imports.add(`${componentName} as ${taggedComponentName}`)
+		replace(match, `<T is={${taggedComponentName}}`)
 	}
 
 	while ((match = closeTagRegex.exec(content)) !== null) {

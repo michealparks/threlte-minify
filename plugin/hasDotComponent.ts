@@ -1,3 +1,5 @@
+import { stripScriptTags } from './stripScriptTags'
+
 export const hasDotComponent = (code: string): boolean => {
-	return code.includes('<T.')
+	return stripScriptTags(code).includes('<T.')
 }

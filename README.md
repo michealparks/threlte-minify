@@ -1,38 +1,53 @@
-# create-svelte
+# threlte-minify
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+An 🚧 experimental 🚧 vite plugin to produce better minification results when building a Threlte app.
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+npm i -D threlte-minify
 ```
 
-## Developing
+```ts
+import { threlteMinify } from 'threlte-minify'
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+export default defineConfig({
+	build: {
+		minify: true
+	},
+	plugins: [threlteMinify()]
+})
 ```
 
-## Building
+## How does it do it?
 
-To create a production version of your app:
+Threlte needs to `import * as THREE from 'three'` in order to resolve components such as `<T.Mesh>`.
 
-```bash
-npm run build
+This plugin preprocesses your svelte components, transforming them from this:
+
+```svelte
+<script>
+	import { T } from '@threlte/core'
+</script>
+
+<T.Mesh>...</T.Mesh>
 ```
 
-You can preview the production build with `npm run preview`.
+...to this:
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```svelte
+<script>
+	import { Mesh as THRELTE_MINIFY__Mesh } from 'three'
+	import { T } from '@threlte/core'
+</script>
+
+<T is={THRELTE_MINIFY__Mesh}>...</T>
+```
+
+The import is aliased to attempt to avoid collisions with existing imports / identifiers.
+
+Finally, it removes the aforementioned wildcard import from Threlte's internals.
+
+This allows more THREE components to be treeshaken.
+
+## Risks
+
+This plugin modifies your code, and although all edge cases that would cause problems are attempted to be covered, it is possible that there are some not accounted for.

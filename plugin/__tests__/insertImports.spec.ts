@@ -50,24 +50,4 @@ describe('insertImports', () => {
 		const result = insertImports(newImports, content)
 		expect(result?.code).toEqual(content) // No changes
 	})
-
-	it.skip('renames imports if identifier already exists', () => {
-		const content = `
-      import { Mesh } from 'three'
-      import { Group } from 'some-other-lib'
-    `
-		const newImports = new Set(['Group'])
-		const result = insertImports(newImports, content)
-		expect(result?.code).toContain(`import { Mesh, Group as THRELTE_MINIFY__Group } from 'three'`)
-		expect(result?.code).toContain(`import { Group } from 'three'`)
-	})
-
-	it.skip('replaces an import type statement if identifier is duplicated', () => {
-		const content = `
-      import { Mesh, type Group } from 'three'
-    `
-		const newImports = new Set(['Group'])
-		const result = insertImports(newImports, content)
-		expect(result?.code).toContain(`import { Mesh, Group } from 'three'`)
-	})
 })
