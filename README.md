@@ -53,3 +53,8 @@ This allows more THREE components to be treeshaken.
 This plugin modifies your code. It breaks all the rules. It parses HTML with regex. Although it [attempts to cover edge cases](https://github.com/michealparks/threlte-minify/tree/main/plugin/__tests__), it is possible that there are some not accounted for.
 
 If you notice one of those, don't hesitate to open an issue or PR!
+
+### Issues
+
+- Currently it will not work if you've aliased your T import, like `import { T as C } from '@threlte/core`
+- Currently it will transform T components in your script section, like `const str = `<T.Mesh>`
