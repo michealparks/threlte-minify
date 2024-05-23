@@ -1,7 +1,23 @@
 {
 	"name": "threlte-minify",
+	"description": "A vite plugin to better minify Threlte apps.",
+	"keywords": [
+		"Threlte"
+	],
+	"license": "MIT",
+	"author": {
+		"name": "Micheal Parks",
+		"email": "michealparks1989@gmail.com",
+		"url": "https://parks.lol"
+	},
+	"exports": {
+		"import": "./plugin/index.js",
+		"node": "./plugin/index.js"
+	},
+	"files": [
+		"./plugin/**/*"
+	],
 	"version": "0.0.1",
-	"private": true,
 	"scripts": {
 		"dev": "vite dev --host",
 		"build": "vite build",

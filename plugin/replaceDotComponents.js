@@ -1,12 +1,28 @@
 import MagicString from 'magic-string'
 
-export const replaceDotComponents = (imports: Set<string>, content: string, filename?: string) => {
+/**
+ *
+ * @param {Set<string>} imports
+ * @param {string} content
+ * @param {string=} filename
+ * @returns
+ */
+export const replaceDotComponents = (imports, content, filename) => {
 	const s = new MagicString(content, { filename })
 	const openTagRegex = /<T\.([a-zA-Z0-9_]+)/g
 	const closeTagRegex = /<\/T\.([a-zA-Z0-9_]+)/g
-	let match: RegExpExecArray | null = null
 
-	const replace = (match: RegExpExecArray, replacement: string) => {
+	/**
+	 * @type {RegExpExecArray | null}
+	 */
+	let match = null
+
+	/**
+	 *
+	 * @param {RegExpExecArray} match
+	 * @param {string} replacement
+	 */
+	const replace = (match, replacement) => {
 		const [fullMatch] = match
 		const start = match.index
 		const end = start + fullMatch.length

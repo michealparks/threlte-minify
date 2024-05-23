@@ -19,7 +19,7 @@ export default defineConfig({
 	}
 })
 
-// +page.svelte
+// Simple test on +page.svelte
 // just vite minify: 729.30 kB
 // threeMinifier: 706.85 kB
 // threlteMinify: 519.14 kB

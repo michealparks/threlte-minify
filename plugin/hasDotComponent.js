@@ -1,5 +1,10 @@
 import { stripScriptTags } from './stripScriptTags'
 
-export const hasDotComponent = (code: string): boolean => {
+/**
+ *
+ * @param {string} code
+ * @returns {boolean}
+ */
+export const hasDotComponent = (code) => {
 	return stripScriptTags(code).includes('<T.')
 }
