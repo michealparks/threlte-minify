@@ -2,7 +2,7 @@
 
 An 🚧 experimental 🚧 vite plugin to produce better minification results when building a Threlte app.
 
-It is only compatible with Svelte 5 and `@threlte/core@next` at the moment.
+**It is only compatible with Svelte 5 and `@threlte/core@next`.**
 
 ```bash
 npm i -D michealparks/threlte-minify
