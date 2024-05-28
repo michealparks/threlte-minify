@@ -48,12 +48,6 @@ Finally, it removes the aforementioned wildcard import from Threlte's internals.
 
 This allows more THREE components to be treeshaken.
 
-## Risks
-
-This plugin modifies your code. It breaks rules. It parses HTML with regex. Although it [attempts to cover edge cases](https://github.com/michealparks/threlte-minify/tree/main/plugin/__tests__), it is possible that there are some not accounted for.
-
-If you notice one of those, don't hesitate to open an issue or PR!
-
 ### Issues
 
 Currently...

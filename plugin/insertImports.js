@@ -9,7 +9,7 @@ import { extractExistingImports } from './extractExistingImports.js'
  * @returns {{ code: string; map: import('magic-string').SourceMap }}
  */
 export const insertImports = (imports, content, filename) => {
-	const s = new MagicString(content, { filename })
+	const str = new MagicString(content, { filename })
 	const existingImports = extractExistingImports(content, 'three')
 	const filteredImports = [...imports]
 		.filter((item) => {
@@ -19,11 +19,11 @@ export const insertImports = (imports, content, filename) => {
 		.join(', ')
 
 	if (filteredImports.length > 0) {
-		s.prepend(`\nimport { ${filteredImports} } from 'three'\n`)
+		str.prepend(`\nimport { ${filteredImports} } from 'three'\n`)
 	}
 
 	return {
-		code: s.toString(),
-		map: s.generateMap()
+		code: str.toString(),
+		map: str.generateMap(),
 	}
 }

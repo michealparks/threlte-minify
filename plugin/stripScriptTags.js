@@ -4,7 +4,7 @@
  * @returns {string}
  */
 export const stripScriptTags = (code) => {
-	const scriptTagRegex = /<script[\s\S]*?>[\s\S]*?<\/script>/gi
+	const scriptTagRegex = /<script[\s\S]*?>[\s\S]*?<\/script>/giu
 
 	// Continuously remove <script> tags until none are left
 	let result = code

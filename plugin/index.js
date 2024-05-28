@@ -1,6 +1,6 @@
 import MagicString from 'magic-string'
-import { hasDotComponent } from './hasDotComponent.js'
 import { compile } from './compile.js'
+import { hasDotComponent } from './hasDotComponent.js'
 
 /**
  *
@@ -9,6 +9,7 @@ import { compile } from './compile.js'
 export const threlteMinify = () => {
 	return {
 		name: 'threlte-minify',
+
 		enforce: 'pre',
 
 		/**
@@ -23,17 +24,19 @@ export const threlteMinify = () => {
 
 				return {
 					code,
-					map: map?.toString()
+					map: map?.toString(),
 				}
 			} else if (id.endsWith('/T.js')) {
-				const s = new MagicString(src, { filename: id })
-				s.overwrite(0, src.length, `export { default as T } from './T.svelte'`)
+				const str = new MagicString(src, { filename: id })
+				str.overwrite(0, src.length, `export { default as T } from './T.svelte'`)
 
 				return {
-					code: s.toString(),
-					map: s.generateMap()
+					code: str.toString(),
+					map: str.generateMap(),
 				}
 			}
-		}
+
+			return Promise.resolve()
+		},
 	}
 }

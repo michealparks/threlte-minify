@@ -8,9 +8,9 @@ import MagicString from 'magic-string'
  * @returns
  */
 export const replaceDotComponents = (imports, content, filename) => {
-	const s = new MagicString(content, { filename })
-	const openTagRegex = /<T\.([a-zA-Z0-9_]+)/g
-	const closeTagRegex = /<\/T\.([a-zA-Z0-9_]+)/g
+	const str = new MagicString(content, { filename })
+	const openTagRegex = /<T\.(?<temp1>[a-zA-Z0-9_]+)/gu
+	const closeTagRegex = /<\/T\.(?<temp1>[a-zA-Z0-9_]+)/gu
 
 	/**
 	 * @type {RegExpExecArray | null}
@@ -19,14 +19,14 @@ export const replaceDotComponents = (imports, content, filename) => {
 
 	/**
 	 *
-	 * @param {RegExpExecArray} match
+	 * @param {RegExpExecArray} regExpArray
 	 * @param {string} replacement
 	 */
-	const replace = (match, replacement) => {
-		const [fullMatch] = match
-		const start = match.index
+	const replace = (regExpArray, replacement) => {
+		const [fullMatch] = regExpArray
+		const start = regExpArray.index
 		const end = start + fullMatch.length
-		s.overwrite(start, end, replacement)
+		str.overwrite(start, end, replacement)
 	}
 
 	while ((match = openTagRegex.exec(content)) !== null) {
@@ -41,7 +41,7 @@ export const replaceDotComponents = (imports, content, filename) => {
 	}
 
 	return {
-		code: s.toString(),
-		map: s.generateMap()
+		code: str.toString(),
+		map: str.generateMap(),
 	}
 }

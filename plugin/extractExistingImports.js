@@ -5,7 +5,7 @@
  * @returns {string[]}
  */
 export const extractExistingImports = (code, moduleName) => {
-	const regex = new RegExp(`import \\{([^}]+)\\} from ['"]${moduleName}['"]`, 'g')
+	const regex = new RegExp(`import \\{([^}]+)\\} from ['"]${moduleName}['"]`, 'ug')
 
 	/**
 	 * @type {RegExpExecArray | null}
@@ -13,15 +13,15 @@ export const extractExistingImports = (code, moduleName) => {
 	let match = null
 
 	/**
-	 * @const {Set<string>}
+	 * @type {Set<string>}
 	 */
 	const imports = new Set()
 
 	while ((match = regex.exec(code)) !== null) {
-		match[1]
-			.split(',')
-			.map((x) => x.trim())
-			.forEach((item) => imports.add(item))
+		const [, result] = match
+		for (const item of result.split(',')) {
+			imports.add(item.trim())
+		}
 	}
 
 	return [...imports]

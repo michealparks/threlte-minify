@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { insertImports } from '../insertImports'
 
 describe('insertImports', () => {
@@ -39,7 +39,8 @@ describe('insertImports', () => {
 	  `
 		const newImports = new Set<string>()
 		const result = insertImports(newImports, content)
-		expect(result?.code).toEqual(content) // No changes
+		// No changes
+		expect(result?.code).toEqual(content)
 	})
 
 	it('should not insert imports if all new imports already exist in the component', () => {
@@ -48,6 +49,7 @@ describe('insertImports', () => {
     `
 		const newImports = new Set(['Mesh', 'Group'])
 		const result = insertImports(newImports, content)
-		expect(result?.code).toEqual(content) // No changes
+		// No changes
+		expect(result?.code).toEqual(content)
 	})
 })
