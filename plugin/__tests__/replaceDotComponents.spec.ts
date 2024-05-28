@@ -10,6 +10,14 @@ describe('replaceDotComponents', () => {
 		expect(imports.has('SomeClass as THRELTE_MINIFY__SomeClass')).toBe(true)
 	})
 
+	it('handles empty components', () => {
+		const content = ''
+		const imports = new Set<string>()
+		const result = replaceDotComponents(imports, content)
+		expect(result.code).toBe('')
+		expect(imports.size).toBe(0)
+	})
+
 	it('handles nested components', () => {
 		const content = `<T.Outer><T.Inner /></T.Outer>`
 		const imports = new Set<string>()
@@ -53,7 +61,7 @@ describe('replaceDotComponents', () => {
 		expect(imports.size).toBe(0)
 	})
 
-	it.skip('does not replace <T.> in the script section', () => {
+	it('does not replace <T.> in the script section', () => {
 		const content = `
       <script>
         const str = '<T.Component />

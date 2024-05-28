@@ -13,9 +13,9 @@ import { threlteMinify } from 'threlte-minify'
 
 export default defineConfig({
 	build: {
-		minify: true
+		minify: true,
 	},
-	plugins: [threlteMinify()]
+	plugins: [threlteMinify()],
 })
 ```
 
@@ -55,4 +55,3 @@ This allows more THREE components to be treeshaken.
 Currently...
 
 - it will not work if you've aliased your T import, like `import { T as C } from '@threlte/core`
-- it will transform T components in your `<script>` section, like `const str = "<T.Mesh>"`
