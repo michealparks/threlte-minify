@@ -1,8 +1,7 @@
 <script>
 	import { T } from '@threlte/core'
 	import { Grid, OrbitControls } from '@threlte/extras'
-	import { ContactShadows } from '@threlte/extras'
-	import Float from './Float.svelte'
+	import { ContactShadows, Float } from '@threlte/extras'
 </script>
 
 <T.PerspectiveCamera makeDefault position={[-10, 10, 10]} fov={15}>
