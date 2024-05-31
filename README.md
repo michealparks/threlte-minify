@@ -49,9 +49,3 @@ The import is aliased to attempt to avoid collisions with existing imports / ide
 Finally, it removes the aforementioned wildcard import from Threlte's internals.
 
 This allows more THREE components to be treeshaken.
-
-### Issues
-
-Currently...
-
-- it will not work if you've aliased your T import, like `import { T as C } from '@threlte/core`

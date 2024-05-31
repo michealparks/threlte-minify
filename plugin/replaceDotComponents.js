@@ -1,114 +1,66 @@
-import MagicString from 'magic-string'
+import { parse } from 'svelte/compiler'
+import MagicString, { SourceMap } from 'magic-string'
+import { findImportAlias } from './findImportAlias'
 
 /**
  *
- * @param {Set<string>} imports
- * @param {string} content
- * @param {string=} filename
- * @returns
+ * @param {Set<string>} imports A list of imports from "THREE"
+ * @param {string} content The stringified component
+ * @param {string=} filename The component filename
+ * @returns {{ code: string, map: SourceMap }}
  */
 export const replaceDotComponents = (imports, content, filename) => {
+	const ast = parse(content)
+	const alias = findImportAlias(content, 'T') ?? 'T'
 	const str = new MagicString(content, { filename })
+	const openTagRegex = new RegExp(`<${alias}\\.(?<temp1>[a-zA-Z0-9_]+)`, 'g')
+	const closeTagRegex = new RegExp(`</${alias}\\.(?<temp1>[a-zA-Z0-9_]+)`, 'g')
 
-	if (content.length === 0) {
-		return {
-			code: str.toString(),
-			map: str.generateMap(),
+	/**
+	 *
+	 * @param {RegExpExecArray} regExpArray
+	 * @param {string} replacement
+	 */
+	const replace = (regExpArray, replacement) => {
+		const [fullMatch] = regExpArray
+		const start = regExpArray.index
+		const end = start + fullMatch.length
+		str.overwrite(start, end, replacement)
+	}
+
+	/**
+	 *
+	 * @param {RegExpExecArray} regExpArray
+	 */
+	const isOutsideHtml = (regExpArray) => {
+		const [fullMatch] = regExpArray
+		const start = regExpArray.index
+		const end = start + fullMatch.length
+
+		if (
+			(ast.module && start > ast.module.start && end < ast.module.end) ||
+			(ast.instance && start > ast.instance.start && end < ast.instance.end)
+		) {
+			return true
 		}
+
+		return false
 	}
 
-	const scriptSectionRegex = /<script.*?>[\s\S]*?<\/script>/giu
-	const openTagRegex = /<T\.(?<temp1>[a-zA-Z0-9_]+)/gu
-	const closeTagRegex = /<\/T\.(?<temp1>[a-zA-Z0-9_]+)/gu
+	for (const match of content.matchAll(openTagRegex)) {
+		if (isOutsideHtml(match)) continue
 
-	/**
-	 * @type {Array<{
-	 *   content: string
-	 *   end: number
-	 *   start: number
-	 * }>}
-	 */
-	const scriptSections = []
-
-	/**
-	 * @type {RegExpExecArray | null}
-	 */
-	let match = null
-
-	while ((match = scriptSectionRegex.exec(content)) !== null) {
-		scriptSections.push({
-			content: match[0],
-			end: scriptSectionRegex.lastIndex,
-			start: match.index,
-		})
+		const [, componentName] = match
+		const taggedComponentName = `THRELTE_MINIFY__${componentName}`
+		imports.add(`${componentName} as ${taggedComponentName}`)
+		replace(match, `<${alias} is={${taggedComponentName}}`)
 	}
 
-	// Split content into parts: HTML and scripts
+	for (const match of content.matchAll(closeTagRegex)) {
+		if (isOutsideHtml(match)) continue
 
-	/**
-	 * @type {number}
-	 */
-	let lastIndex = 0
-
-	/**
-	 * @type {Array<{
-	 *   content: string
-	 *   type: 'html' | 'script'
-	 * }>}
-	 */
-	const sections = []
-
-	for (const section of scriptSections) {
-		if (lastIndex < section.start) {
-			sections.push({
-				content: content.slice(lastIndex, section.start),
-				type: 'html',
-			})
-		}
-		sections.push({
-			content: section.content,
-			type: 'script',
-		})
-		lastIndex = section.end
+		replace(match, `</${alias}`)
 	}
-
-	if (lastIndex < content.length) {
-		sections.push({
-			content: content.slice(lastIndex),
-			type: 'html',
-		})
-	}
-
-	// Process only HTML sections
-	for (const section of sections) {
-		if (section.type === 'html') {
-			/**
-			 * @type {string}
-			 */
-			let sectionContent = section.content
-
-			while ((match = openTagRegex.exec(sectionContent)) !== null) {
-				const [, componentName] = match
-				const taggedComponentName = `THRELTE_MINIFY__${componentName}`
-				imports.add(`${componentName} as ${taggedComponentName}`)
-				sectionContent = sectionContent.replace(match[0], `<T is={${taggedComponentName}}`)
-			}
-
-			while ((match = closeTagRegex.exec(sectionContent)) !== null) {
-				sectionContent = sectionContent.replace(match[0], `</T`)
-			}
-
-			section.content = sectionContent
-		}
-	}
-
-	const result = sections
-		.map((section) => {
-			return section.content
-		})
-		.join('')
-
-	str.overwrite(0, content.length, result)
 
 	return {
 		code: str.toString(),

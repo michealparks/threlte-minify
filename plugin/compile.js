@@ -2,10 +2,11 @@ import { insertImports } from './insertImports.js'
 import { preprocess } from 'svelte/compiler'
 import { replaceDotComponents } from './replaceDotComponents.js'
 
-/**
- * @type {Set<string>}
- */
+/** @type {Set<string>} */
 const imports = new Set()
+
+/** @type {Set<string>} */
+const scripts = new Set()
 
 /**
  *
@@ -15,6 +16,11 @@ const imports = new Set()
 export const compile = (source) => {
 	return preprocess(source, [
 		{
+			script: ({ content }) => {
+				scripts.add(content)
+			},
+		},
+		{
 			name: 'threlte-minify',
 
 			markup: ({ content, filename }) => {
@@ -22,7 +28,10 @@ export const compile = (source) => {
 			},
 			script: ({ content, filename }) => {
 				const result = insertImports(imports, content, filename)
+
 				imports.clear()
+				scripts.clear()
+
 				return result
 			},
 		},

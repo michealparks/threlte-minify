@@ -3,10 +3,10 @@ import { replaceDotComponents } from '../replaceDotComponents'
 
 describe('replaceDotComponents', () => {
 	it('replaces <T.SomeClass> with <T is={THRELTE_MINIFY__SomeClass}>', () => {
-		const content = `<T.SomeClass>`
+		const content = `<T.SomeClass></T.SomeClass>`
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
-		expect(result.code).toBe(`<T is={THRELTE_MINIFY__SomeClass}>`)
+		expect(result.code).toBe(`<T is={THRELTE_MINIFY__SomeClass}></T>`)
 		expect(imports.has('SomeClass as THRELTE_MINIFY__SomeClass')).toBe(true)
 	})
 
@@ -27,13 +27,72 @@ describe('replaceDotComponents', () => {
 		expect(imports.has('Inner as THRELTE_MINIFY__Inner')).toBe(true)
 	})
 
-	it('replaces components with attributes', () => {
-		const content = `<T.SomeClass attribute="value" {prop} {...$$restProps}><slot /></T>`
+	it('handles mixed components', () => {
+		const content = `
+			<T
+				is={group}
+				bind:ref
+				{...props}
+			>
+				<T.Group rotation.x={Math.PI / 2}>
+					<T.Mesh
+						scale.y={-1}
+						rotation.x={-Math.PI / 2}
+						material={shadowMaterial}
+						geometry={planeGeometry}
+					/>
+
+					<T
+						is={shadowCamera}
+						manual
+					/>
+
+					<slot ref={group} />
+				</T.Group>
+			</T>
+		`
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
-		expect(result.code).toBe(
-			`<T is={THRELTE_MINIFY__SomeClass} attribute="value" {prop} {...$$restProps}><slot /></T>`
-		)
+		expect(result.code).toBe(`
+			<T
+				is={group}
+				bind:ref
+				{...props}
+			>
+				<T is={THRELTE_MINIFY__Group} rotation.x={Math.PI / 2}>
+					<T is={THRELTE_MINIFY__Mesh}
+						scale.y={-1}
+						rotation.x={-Math.PI / 2}
+						material={shadowMaterial}
+						geometry={planeGeometry}
+					/>
+
+					<T
+						is={shadowCamera}
+						manual
+					/>
+
+					<slot ref={group} />
+				</T>
+			</T>
+		`)
+		expect(imports.has('Group as THRELTE_MINIFY__Group')).toBe(true)
+		expect(imports.has('Mesh as THRELTE_MINIFY__Mesh')).toBe(true)
+	})
+
+	it('replaces components with attributes', () => {
+		const content = `
+			<T.SomeClass attribute="value" {prop} {...$$restProps}>
+				<slot />
+			</T.SomeClass>
+		`
+		const imports = new Set<string>()
+		const result = replaceDotComponents(imports, content)
+		expect(result.code).toBe(`
+			<T is={THRELTE_MINIFY__SomeClass} attribute="value" {prop} {...$$restProps}>
+				<slot />
+			</T>
+		`)
 		expect(imports.has('SomeClass as THRELTE_MINIFY__SomeClass')).toBe(true)
 	})
 
@@ -53,23 +112,41 @@ describe('replaceDotComponents', () => {
 		expect(imports.size).toBe(0)
 	})
 
-	it.skip('handles import { x as y }', () => {
-		const content = `<C.SomeClass />`
+	it('handles import { x as y }', () => {
+		const content = `
+			<script>
+				import { T as C } from '@threlte/core'
+			</script>
+			<C.SomeClass />
+		`
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
-		expect(result.code).toBe(`<C is={SomeClass} />`)
-		expect(imports.size).toBe(0)
+		expect(result.code).toBe(`
+			<script>
+				import { T as C } from '@threlte/core'
+			</script>
+			<C is={THRELTE_MINIFY__SomeClass} />
+		`)
+		expect(imports.size).toBe(1)
 	})
 
 	it('does not replace <T.> in the script section', () => {
 		const content = `
-      <script>
-        const str = '<T.Component />
-      </script>
-    `
+			<script>
+				import { T } from '@threlte/core'
+				const str = '<T.Component />'
+			</script>
+			<T.Mesh></T.Mesh>
+		`
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
-		expect(result.code).toBe(content)
-		expect(imports.size).toBe(0)
+		expect(result.code).toBe(`
+			<script>
+				import { T } from '@threlte/core'
+				const str = '<T.Component />'
+			</script>
+			<T is={THRELTE_MINIFY__Mesh}></T>
+		`)
+		expect(imports.size).toBe(1)
 	})
 })

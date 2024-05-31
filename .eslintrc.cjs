@@ -32,9 +32,13 @@ module.exports = {
 	rules: {
 		'arrow-body-style': ['error', 'always'],
 		'max-lines-per-function': ['error', 200],
+		'max-params': 'off',
 		'max-statements': ['error', 10, { ignoreTopLevelFunctions: true }],
+		'no-continue': 'off',
 		'no-magic-numbers': 'off',
 		'one-var': ['error', 'never'],
+		'prefer-named-capture-group': 'off',
+		'require-unicode-regexp': 'off',
 		'sort-keys': ['error', 'asc', { allowLineSeparatedGroups: true }],
 	},
 }
