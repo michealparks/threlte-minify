@@ -5,9 +5,6 @@ import { replaceDotComponents } from './replaceDotComponents.js'
 /** @type {Set<string>} */
 const imports = new Set()
 
-/** @type {Set<string>} */
-const scripts = new Set()
-
 /**
  *
  * @param {string} source
@@ -15,11 +12,6 @@ const scripts = new Set()
  */
 export const compile = (source) => {
 	return preprocess(source, [
-		{
-			script: ({ content }) => {
-				scripts.add(content)
-			},
-		},
 		{
 			name: 'threlte-minify',
 
@@ -30,7 +22,6 @@ export const compile = (source) => {
 				const result = insertImports(imports, content, filename)
 
 				imports.clear()
-				scripts.clear()
 
 				return result
 			},

@@ -1,13 +1,13 @@
-import { parse } from 'svelte/compiler'
-import MagicString, { SourceMap } from 'magic-string'
+import MagicString from 'magic-string'
 import { findImportAlias } from './findImportAlias'
+import { parse } from 'svelte/compiler'
 
 /**
  *
  * @param {Set<string>} imports A list of imports from "THREE"
  * @param {string} content The stringified component
  * @param {string=} filename The component filename
- * @returns {{ code: string, map: SourceMap }}
+ * @returns {{ code: string, map: import('magic-string').SourceMap }}
  */
 export const replaceDotComponents = (imports, content, filename) => {
 	const ast = parse(content)
