@@ -2,6 +2,13 @@ import MagicString from 'magic-string'
 import { compile } from './compile.js'
 import { hasDotComponent } from './hasDotComponent.js'
 
+const tOverwrite = `
+export { default as T } from './T.svelte'
+
+export const extend = () => {
+	throw new Error('Threlte Minify is not compatible with Threlte's extend() function.')
+}`
+
 /**
  *
  * @returns {import('vite').PluginOption}
@@ -28,7 +35,7 @@ export const threlteMinify = () => {
 				}
 			} else if (id.endsWith('/T.js')) {
 				const str = new MagicString(src, { filename: id })
-				str.overwrite(0, src.length, `export { default as T } from './T.svelte'`)
+				str.overwrite(0, src.length, tOverwrite)
 
 				return {
 					code: str.toString(),

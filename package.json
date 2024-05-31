@@ -1,5 +1,6 @@
 {
 	"name": "threlte-minify",
+	"version": "0.0.1",
 	"description": "A vite plugin to better minify Threlte apps.",
 	"keywords": [
 		"Threlte"
@@ -18,7 +19,6 @@
 	"files": [
 		"./plugin/**/*"
 	],
-	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev --host",
 		"build": "vite build",
