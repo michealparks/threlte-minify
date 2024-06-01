@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { extractExistingImports } from '../extractExistingImports'
+import { extractExistingImports } from '../extractExistingImports.js'
 
 describe('extractExistingImports', () => {
 	it('returns an array of imports from the specified module', () => {

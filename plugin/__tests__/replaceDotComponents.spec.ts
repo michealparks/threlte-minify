@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { replaceDotComponents } from '../replaceDotComponents'
+import { replaceDotComponents } from '../replaceDotComponents.js'
 
 describe('replaceDotComponents', () => {
 	it('replaces <T.SomeClass> with <T is={THRELTE_MINIFY__SomeClass}>', () => {

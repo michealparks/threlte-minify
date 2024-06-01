@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hasDotComponent } from '../hasDotComponent'
+import { hasDotComponent } from '../hasDotComponent.js'
 
 describe('hasDotComponent', () => {
 	it('returns true when the code contains a <T.>', () => {

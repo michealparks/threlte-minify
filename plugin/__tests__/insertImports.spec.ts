@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { insertImports } from '../insertImports'
+import { insertImports } from '../insertImports.js'
 
 describe('insertImports', () => {
 	it('inserts new imports into a component with existing imports from the same module', () => {

@@ -17,7 +17,7 @@
 		"types": "./plugin/index.js"
 	},
 	"files": [
-		"./plugin/**/*"
+		"./plugin/*"
 	],
 	"scripts": {
 		"dev": "vite dev --host",

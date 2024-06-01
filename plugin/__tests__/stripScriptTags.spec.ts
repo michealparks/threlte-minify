@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { stripScriptTags } from '../stripScriptTags'
+import { stripScriptTags } from '../stripScriptTags.js'
 
 describe('stripScriptTags', () => {
 	it('Does not remove content that is not script tags', () => {

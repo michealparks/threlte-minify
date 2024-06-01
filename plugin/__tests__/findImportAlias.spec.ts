@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { findImportAlias } from '../findImportAlias'
+import { findImportAlias } from '../findImportAlias.js'
 
 describe('findImportAlias', () => {
 	it('returns the alias when the import statement is correctly formatted', () => {

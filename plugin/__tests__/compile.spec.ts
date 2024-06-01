@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compile } from '../compile'
+import { compile } from '../compile.js'
 
 describe('compile', () => {
 	const component = `
