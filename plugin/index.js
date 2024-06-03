@@ -6,7 +6,7 @@ const tOverwrite = `
 export { default as T } from './T.svelte'
 
 export const extend = () => {
-	throw new Error('Threlte Minify is not compatible with Threlte's extend() function.')
+	throw new Error('Threlte Minify is not compatible with the Threlte extend() function.')
 }`
 
 /**
