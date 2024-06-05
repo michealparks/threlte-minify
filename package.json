@@ -13,8 +13,7 @@
 	},
 	"exports": {
 		"import": "./plugin/index.js",
-		"node": "./plugin/index.js",
-		"types": "./plugin/index.js"
+		"types": "./plugin/index.d.ts"
 	},
 	"files": [
 		"./plugin/*"
