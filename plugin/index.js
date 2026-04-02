@@ -33,7 +33,7 @@ export const threlteMinify = () => {
 					code,
 					map: map?.toString(),
 				}
-			} else if (id.endsWith('/T.js')) {
+			} else if (id.includes('@threlte/core') && id.endsWith('/T.js')) {
 				const str = new MagicString(src, { filename: id })
 				str.overwrite(0, src.length, tOverwrite)
 

@@ -11,7 +11,7 @@ export const findImportAlias = (content, alias) => {
 	for (const match of matches) {
 		const imports = match[1].split(',')
 		for (const imp of imports) {
-			const [imported, asAlias] = imp.split('as').map((str) => {
+			const [imported, asAlias] = imp.split(/\bas\b/).map((str) => {
 				return str.trim()
 			})
 			if (imported === alias && asAlias) {
