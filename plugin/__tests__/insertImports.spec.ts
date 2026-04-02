@@ -52,4 +52,11 @@ describe('insertImports', () => {
 		// No changes
 		expect(result?.code).toEqual(content)
 	})
+
+	it('does not insert duplicates when the existing import uses compact spacing', () => {
+		const content = `import{Mesh as THRELTE_MINIFY__Mesh}from"three"`
+		const newImports = new Set(['Mesh as THRELTE_MINIFY__Mesh'])
+		const result = insertImports(newImports, content)
+		expect(result.code).toBe(content)
+	})
 })

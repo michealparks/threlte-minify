@@ -22,14 +22,14 @@ describe('compile', () => {
   `
 
 	it('Correctly modifies <T.> components during compilation', async () => {
-		const result = await compile(component)
+		const result = await compile(component, 'file.svelte')
 		expect(result.code).toBe(`
     <script context="module" lang="ts">
-import { Group as THRELTE_MINIFY__Group, Mesh as THRELTE_MINIFY__Mesh } from 'three'
-
       import { Group } from 'three'
     </script>
     <script lang="ts">
+import { Group as THRELTE_MINIFY__Group, Mesh as THRELTE_MINIFY__Mesh } from 'three'
+
       import { Canvas, T } from '@threlte/core'
     </script>
 
@@ -43,5 +43,29 @@ import { Group as THRELTE_MINIFY__Group, Mesh as THRELTE_MINIFY__Mesh } from 'th
       </T>
     </Canvas>
   `)
+	})
+
+	it('does not transform comment, style, or text literals that contain <T.>', async () => {
+		const source = `
+    <script>
+      import { T } from '@threlte/core'
+    </script>
+    <!-- <T.Mesh /> -->
+    <style>.x::before { content: "<T.Mesh />"; }</style>
+    <p>{'<T.Mesh />'}</p>
+  `
+		const result = await compile(source, 'file.svelte')
+		expect(result.code).toBe(source)
+	})
+
+	it('does not transform components when T is not imported from @threlte/core', async () => {
+		const source = `
+    <script>
+      import * as T from './local.js'
+    </script>
+    <T.Mesh />
+  `
+		const result = await compile(source, 'file.svelte')
+		expect(result.code).toBe(source)
 	})
 })

@@ -57,4 +57,10 @@ describe('extractExistingImports', () => {
 		const result = extractExistingImports(code, 'three')
 		expect(result).toEqual(['Mesh', 'Group', 'type Material'])
 	})
+
+	it('handles imports without whitespace around braces or from', () => {
+		const code = `import{Mesh as THRELTE_MINIFY__Mesh,type Material}from"three"`
+		const result = extractExistingImports(code, 'three')
+		expect(result).toEqual(['Mesh as THRELTE_MINIFY__Mesh', 'type Material'])
+	})
 })

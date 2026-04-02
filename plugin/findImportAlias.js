@@ -11,11 +11,14 @@ export const findImportAlias = (content, alias) => {
 	for (const match of matches) {
 		const imports = match[1].split(',')
 		for (const imp of imports) {
-			const [imported, asAlias] = imp.split(/\bas\b/).map((str) => {
-				return str.trim()
-			})
-			if (imported === alias && asAlias) {
-				return asAlias
+			const [imported, asAlias] = imp
+				.trim()
+				.split(/\s+as\s+/)
+				.map((str) => {
+					return str.trim()
+				})
+			if (imported === alias) {
+				return asAlias ?? imported
 			}
 		}
 	}

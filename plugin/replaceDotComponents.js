@@ -10,57 +10,100 @@ import { parse } from 'svelte/compiler'
  * @returns {{ code: string, map: import('magic-string').SourceMap }}
  */
 export const replaceDotComponents = (imports, content, filename) => {
-	const ast = parse(content)
-	const alias = findImportAlias(content, 'T') ?? 'T'
+	const alias = findImportAlias(content, 'T')
 	const str = new MagicString(content, { filename })
-	const openTagRegex = new RegExp(`<${alias}\\.(?<temp1>[a-zA-Z0-9_]+)`, 'g')
-	const closeTagRegex = new RegExp(`</${alias}\\.(?<temp1>[a-zA-Z0-9_]+)`, 'g')
+
+	if (!alias) {
+		return {
+			code: str.toString(),
+			map: str.generateMap(),
+		}
+	}
+
+	const ast = parse(content)
 
 	/**
 	 *
-	 * @param {RegExpExecArray} regExpArray
-	 * @param {string} replacement
+	 * @param {string} identifier
+	 * @returns {boolean}
 	 */
-	const replace = (regExpArray, replacement) => {
-		const [fullMatch] = regExpArray
-		const start = regExpArray.index
-		const end = start + fullMatch.length
-		str.overwrite(start, end, replacement)
+	const hasIdentifier = (identifier) => {
+		const escapedIdentifier = identifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+		return new RegExp(`(?<![\\w$])${escapedIdentifier}(?![\\w$])`).test(content)
 	}
 
 	/**
 	 *
-	 * @param {RegExpExecArray} regExpArray
+	 * @param {string} componentName
+	 * @returns {string}
 	 */
-	const isOutsideHtml = (regExpArray) => {
-		const [fullMatch] = regExpArray
-		const start = regExpArray.index
-		const end = start + fullMatch.length
-
-		if (
-			(ast.module && start > ast.module.start && end < ast.module.end) ||
-			(ast.instance && start > ast.instance.start && end < ast.instance.end)
-		) {
-			return true
+	const getTaggedComponentName = (componentName) => {
+		for (const item of imports) {
+			const [imported, localName] = item.split(/\s+as\s+/)
+			if (imported === componentName && localName) {
+				return localName
+			}
 		}
 
-		return false
-	}
+		let suffix = 0
+		let taggedComponentName = `THRELTE_MINIFY__${componentName}`
 
-	for (const match of content.matchAll(openTagRegex)) {
-		if (isOutsideHtml(match)) continue
+		while (
+			hasIdentifier(taggedComponentName) ||
+			[...imports].some((item) => {
+				const [, localName] = item.split(/\s+as\s+/)
+				return localName === taggedComponentName
+			})
+		) {
+			suffix += 1
+			taggedComponentName = `THRELTE_MINIFY__${componentName}_${suffix}`
+		}
 
-		const [, componentName] = match
-		const taggedComponentName = `THRELTE_MINIFY__${componentName}`
 		imports.add(`${componentName} as ${taggedComponentName}`)
-		replace(match, `<${alias} is={${taggedComponentName}}`)
+		return taggedComponentName
 	}
 
-	for (const match of content.matchAll(closeTagRegex)) {
-		if (isOutsideHtml(match)) continue
+	/**
+	 *
+	 * @param {unknown} node
+	 * @returns {void}
+	 */
+	const visit = (node) => {
+		if (!node || typeof node !== 'object') return
 
-		replace(match, `</${alias}`)
+		if (Array.isArray(node)) {
+			for (const child of node) {
+				visit(child)
+			}
+			return
+		}
+
+		if (node.type === 'InlineComponent' && node.name.startsWith(`${alias}.`)) {
+			const componentName = node.name.slice(alias.length + 1)
+			const taggedComponentName = getTaggedComponentName(componentName)
+			const openTagNameStart = node.start + 1
+			const openTagNameEnd = openTagNameStart + node.name.length
+
+			str.overwrite(openTagNameStart, openTagNameEnd, `${alias} is={${taggedComponentName}}`)
+
+			const closeTag = `</${node.name}`
+			const closeTagStart = content.lastIndexOf(closeTag, node.end)
+
+			if (closeTagStart > node.start) {
+				const closeTagNameStart = closeTagStart + 2
+				const closeTagNameEnd = closeTagNameStart + node.name.length
+				str.overwrite(closeTagNameStart, closeTagNameEnd, alias)
+			}
+		}
+
+		for (const value of Object.values(node)) {
+			if (value && typeof value === 'object') {
+				visit(value)
+			}
+		}
 	}
+
+	visit(ast.html)
 
 	return {
 		code: str.toString(),

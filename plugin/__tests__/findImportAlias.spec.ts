@@ -91,7 +91,7 @@ describe('findImportAlias', () => {
     `
 		const alias = 'T'
 		const result = findImportAlias(svelteComponent, alias)
-		expect(result).toBeNull()
+		expect(result).toBe('T')
 	})
 
 	it('should handle an empty component string', () => {
@@ -136,5 +136,15 @@ describe('findImportAlias', () => {
 		const alias = 'T'
 		const result = findImportAlias(svelteComponent, alias)
 		expect(result).toBe('y')
+	})
+
+	it('does not truncate aliases that contain "as"', () => {
+		const svelteComponent = `
+      <script>
+        import { T as task } from '@threlte/core';
+      </script>
+    `
+		const result = findImportAlias(svelteComponent, 'T')
+		expect(result).toBe('task')
 	})
 })

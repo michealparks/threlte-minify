@@ -4,14 +4,5 @@
  * @returns {string}
  */
 export const stripScriptTags = (code) => {
-	const scriptTagRegex = /<script[\s\S]*?>[\s\S]*?<\/script>/giu
-
-	// Continuously remove <script> tags until none are left
-	let result = code
-
-	while (scriptTagRegex.test(result)) {
-		result = result.replace(scriptTagRegex, '')
-	}
-
-	return result
+	return code.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/giu, '')
 }

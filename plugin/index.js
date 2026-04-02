@@ -27,7 +27,7 @@ export const threlteMinify = () => {
 		 */
 		async transform(src, id) {
 			if (id.endsWith('.svelte') && hasDotComponent(src)) {
-				const { code, map } = await compile(src)
+				const { code, map } = await compile(src, id)
 
 				return {
 					code,

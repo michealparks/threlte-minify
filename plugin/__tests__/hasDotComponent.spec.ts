@@ -4,7 +4,9 @@ import { hasDotComponent } from '../hasDotComponent.js'
 describe('hasDotComponent', () => {
 	it('returns true when the code contains a <T.>', () => {
 		const code = `
-      <script></script>
+      <script>
+				import { T } from '@threlte/core'
+			</script>
       <T.Mesh></T.Mesh>
     `
 		expect(hasDotComponent(code)).toBe(true)
@@ -12,6 +14,9 @@ describe('hasDotComponent', () => {
 
 	it('returns true when the code contains multiple <T.> instances', () => {
 		const code = `
+			<script>
+				import { T } from '@threlte/core'
+			</script>
       <T.Mesh></T.Mesh>
       <T.Object3D attribute="value" {...$$restProps}></T.Object3D>
     `
@@ -37,6 +42,37 @@ describe('hasDotComponent', () => {
 			<script>
 				const str = '<T.Mesh>'
 			</script>
+    `
+		expect(hasDotComponent(code)).toBe(false)
+	})
+
+	it('detects aliased T dot components', () => {
+		const code = `
+			<script>
+				import { T as C } from '@threlte/core'
+			</script>
+			<C.Mesh />
+    `
+		expect(hasDotComponent(code)).toBe(true)
+	})
+
+	it('returns false when T is not imported from @threlte/core', () => {
+		const code = `
+			<script>
+				import * as T from './local.js'
+			</script>
+			<T.Mesh />
+    `
+		expect(hasDotComponent(code)).toBe(false)
+	})
+
+	it('returns false when <T.> only appears in comments or text', () => {
+		const code = `
+			<script>
+				import { T } from '@threlte/core'
+			</script>
+			<!-- <T.Mesh /> -->
+			<p>{'<T.Mesh />'}</p>
     `
 		expect(hasDotComponent(code)).toBe(false)
 	})

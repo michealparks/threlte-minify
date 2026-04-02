@@ -5,7 +5,8 @@
  * @returns {string[]}
  */
 export const extractExistingImports = (code, moduleName) => {
-	const regex = new RegExp(`import \\{([^}]+)\\} from ['"]${moduleName}['"]`, 'ug')
+	const escapedModuleName = moduleName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+	const regex = new RegExp(`import\\s*\\{([^}]+)\\}\\s*from\\s*['"]${escapedModuleName}['"]`, 'ug')
 
 	/**
 	 * @type {RegExpExecArray | null}

@@ -3,10 +3,16 @@ import { replaceDotComponents } from '../replaceDotComponents.js'
 
 describe('replaceDotComponents', () => {
 	it('replaces <T.SomeClass> with <T is={THRELTE_MINIFY__SomeClass}>', () => {
-		const content = `<T.SomeClass></T.SomeClass>`
+		const content = `<script>
+	import { T } from '@threlte/core'
+</script>
+<T.SomeClass></T.SomeClass>`
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
-		expect(result.code).toBe(`<T is={THRELTE_MINIFY__SomeClass}></T>`)
+		expect(result.code).toBe(`<script>
+	import { T } from '@threlte/core'
+</script>
+<T is={THRELTE_MINIFY__SomeClass}></T>`)
 		expect(imports.has('SomeClass as THRELTE_MINIFY__SomeClass')).toBe(true)
 	})
 
@@ -19,16 +25,25 @@ describe('replaceDotComponents', () => {
 	})
 
 	it('handles nested components', () => {
-		const content = `<T.Outer><T.Inner /></T.Outer>`
+		const content = `<script>
+	import { T } from '@threlte/core'
+</script>
+<T.Outer><T.Inner /></T.Outer>`
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
-		expect(result.code).toBe(`<T is={THRELTE_MINIFY__Outer}><T is={THRELTE_MINIFY__Inner} /></T>`)
+		expect(result.code).toBe(`<script>
+	import { T } from '@threlte/core'
+</script>
+<T is={THRELTE_MINIFY__Outer}><T is={THRELTE_MINIFY__Inner} /></T>`)
 		expect(imports.has('Outer as THRELTE_MINIFY__Outer')).toBe(true)
 		expect(imports.has('Inner as THRELTE_MINIFY__Inner')).toBe(true)
 	})
 
 	it('handles mixed components', () => {
 		const content = `
+			<script>
+				import { T } from '@threlte/core'
+			</script>
 			<T
 				is={group}
 				bind:ref
@@ -54,6 +69,9 @@ describe('replaceDotComponents', () => {
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
 		expect(result.code).toBe(`
+			<script>
+				import { T } from '@threlte/core'
+			</script>
 			<T
 				is={group}
 				bind:ref
@@ -82,6 +100,9 @@ describe('replaceDotComponents', () => {
 
 	it('replaces components with attributes', () => {
 		const content = `
+			<script>
+				import { T } from '@threlte/core'
+			</script>
 			<T.SomeClass attribute="value" {prop} {...$$restProps}>
 				<slot />
 			</T.SomeClass>
@@ -89,6 +110,9 @@ describe('replaceDotComponents', () => {
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
 		expect(result.code).toBe(`
+			<script>
+				import { T } from '@threlte/core'
+			</script>
 			<T is={THRELTE_MINIFY__SomeClass} attribute="value" {prop} {...$$restProps}>
 				<slot />
 			</T>
@@ -97,10 +121,16 @@ describe('replaceDotComponents', () => {
 	})
 
 	it('replaces closing tags', () => {
-		const content = `<T.SomeClass></T.SomeClass>`
+		const content = `<script>
+	import { T } from '@threlte/core'
+</script>
+<T.SomeClass></T.SomeClass>`
 		const imports = new Set<string>()
 		const result = replaceDotComponents(imports, content)
-		expect(result.code).toBe(`<T is={THRELTE_MINIFY__SomeClass}></T>`)
+		expect(result.code).toBe(`<script>
+	import { T } from '@threlte/core'
+</script>
+<T is={THRELTE_MINIFY__SomeClass}></T>`)
 		expect(imports.has('SomeClass as THRELTE_MINIFY__SomeClass')).toBe(true)
 	})
 
@@ -128,6 +158,65 @@ describe('replaceDotComponents', () => {
 			<C is={THRELTE_MINIFY__SomeClass} />
 		`)
 		expect(imports.size).toBe(1)
+	})
+
+	it('handles aliases that contain regex characters', () => {
+		const content = `
+			<script>
+				import { T as T$ } from '@threlte/core'
+			</script>
+			<T$.SomeClass />
+		`
+		const imports = new Set<string>()
+		const result = replaceDotComponents(imports, content)
+		expect(result.code).toBe(`
+			<script>
+				import { T as T$ } from '@threlte/core'
+			</script>
+			<T$ is={THRELTE_MINIFY__SomeClass} />
+		`)
+		expect(imports.has('SomeClass as THRELTE_MINIFY__SomeClass')).toBe(true)
+	})
+
+	it('uses a unique generated alias when the default one already exists', () => {
+		const content = `
+			<script>
+				const THRELTE_MINIFY__Mesh = 1
+				import { T } from '@threlte/core'
+			</script>
+			<T.Mesh />
+		`
+		const imports = new Set<string>()
+		const result = replaceDotComponents(imports, content)
+		expect(result.code).toContain(`<T is={THRELTE_MINIFY__Mesh_1} />`)
+		expect(imports.has('Mesh as THRELTE_MINIFY__Mesh_1')).toBe(true)
+	})
+
+	it('does not replace components when T is not imported from @threlte/core', () => {
+		const content = `
+			<script>
+				import * as T from './local.js'
+			</script>
+			<T.Mesh />
+		`
+		const imports = new Set<string>()
+		const result = replaceDotComponents(imports, content)
+		expect(result.code).toBe(content)
+		expect(imports.size).toBe(0)
+	})
+
+	it('does not replace comment or text content that looks like a dot component', () => {
+		const content = `
+			<script>
+				import { T } from '@threlte/core'
+			</script>
+			<!-- <T.Mesh /> -->
+			<p>{'<T.Mesh />'}</p>
+		`
+		const imports = new Set<string>()
+		const result = replaceDotComponents(imports, content)
+		expect(result.code).toBe(content)
+		expect(imports.size).toBe(0)
 	})
 
 	it('does not replace <T.> in the script section', () => {
