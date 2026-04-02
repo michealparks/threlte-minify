@@ -1,22 +1,28 @@
-import { defineConfig } from 'vite'
-import mkcert from 'vite-plugin-mkcert'
+import { type PluginOption, defineConfig } from 'vite'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { threeMinifier } from '@yushijinhun/three-minifier-rollup'
 import { threlteMinify } from './plugin/index'
 
-const plugins = [mkcert(), sveltekit()]
+export default defineConfig(({ mode }) => {
+	const plugins: PluginOption[] = [sveltekit()]
 
-plugins.unshift(threlteMinify())
-plugins.push({ ...threeMinifier(), enforce: 'pre' })
+	if (mode === 'threlte' || mode === 'production') {
+		plugins.unshift(threlteMinify())
+	}
 
-export default defineConfig({
-	build: {
-		minify: true,
-	},
-	plugins,
-	ssr: {
-		noExternal: ['three'],
-	},
+	if (mode === 'three' || mode === 'production') {
+		plugins.push({ ...threeMinifier(), enforce: 'pre' })
+	}
+
+	return {
+		build: {
+			minify: true,
+		},
+		plugins,
+		ssr: {
+			noExternal: ['three'],
+		},
+	}
 })
 
 /**
