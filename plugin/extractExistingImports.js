@@ -11,7 +11,7 @@ export const extractExistingImports = (code, moduleName) => {
 	/**
 	 * @type {RegExpExecArray | null}
 	 */
-	let match = null
+	let match
 
 	/**
 	 * @type {Set<string>}
