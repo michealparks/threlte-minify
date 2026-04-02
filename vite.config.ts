@@ -1,6 +1,7 @@
-import { type PluginOption, defineConfig } from 'vite'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { threeMinifier } from '@yushijinhun/three-minifier-rollup'
+import { defineConfig, type PluginOption } from 'vite'
+
 import { threlteMinify } from './plugin/index'
 
 export default defineConfig(({ mode }) => {

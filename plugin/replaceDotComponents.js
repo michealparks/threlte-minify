@@ -1,6 +1,7 @@
 import MagicString from 'magic-string'
-import { findImportAlias } from './findImportAlias.js'
 import { parse } from 'svelte/compiler'
+
+import { findImportAlias } from './findImportAlias.js'
 
 /**
  *

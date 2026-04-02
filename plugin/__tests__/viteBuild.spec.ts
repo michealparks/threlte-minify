@@ -1,8 +1,9 @@
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { afterEach, describe, expect, it } from 'vitest'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { build } from 'vite'
+import { afterEach, describe, expect, it } from 'vitest'
+
 import { threlteMinify } from '../index.js'
 
 const tempDirs = new Set<string>()
