@@ -68,4 +68,25 @@ import { Group as THRELTE_MINIFY__Group, Mesh as THRELTE_MINIFY__Mesh } from 'th
 		const result = await compile(source, 'file.svelte')
 		expect(result.code).toBe(source)
 	})
+
+	it('is idempotent and returns a source map for transformed components', async () => {
+		const source = `
+    <script>
+      import { T } from '@threlte/core'
+    </script>
+    <T.Mesh />
+  `
+		const first = await compile(source, '/virtual/Test.svelte')
+		const second = await compile(first.code, '/virtual/Test.svelte')
+
+		expect(second.code).toBe(first.code)
+		expect(first.map).toMatchObject({
+			version: 3,
+			sources: ['Test.svelte'],
+		})
+		expect(second.map).toMatchObject({
+			version: 3,
+			sources: ['Test.svelte'],
+		})
+	})
 })

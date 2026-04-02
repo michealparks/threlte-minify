@@ -62,7 +62,7 @@ export const compile = async (source, filename) => {
 				},
 			},
 		],
-		{ filename },
+		{ filename }
 	)
 
 	if (imports.size === 0) {

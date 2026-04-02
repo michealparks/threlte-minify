@@ -19,7 +19,7 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import { threlteMinify } from 'threlte-minify'
 
 export default defineConfig({
-  plugins: [threlteMinify(), sveltekit()],
+	plugins: [threlteMinify(), sveltekit()],
 })
 ```
 
@@ -27,10 +27,10 @@ export default defineConfig({
 
 Tested on a simple scene with a few meshes and materials:
 
-| Configuration | Size | Gzip |
-|---|---:|---:|
-| No plugins | 810.88 kB | 213.82 kB |
-| threlte-minify | 576.58 kB | 150.13 kB |
+| Configuration                                                                      |      Size |      Gzip |
+| ---------------------------------------------------------------------------------- | --------: | --------: |
+| No plugins                                                                         | 810.88 kB | 213.82 kB |
+| threlte-minify                                                                     | 576.58 kB | 150.13 kB |
 | threlte-minify + [three-minifier](https://github.com/nickyMcDonald/three-minifier) | 550.64 kB | 145.96 kB |
 
 ## How it works
@@ -44,12 +44,12 @@ This plugin preprocesses your Svelte components, transforming them from this:
 
 ```svelte
 <script>
-  import { T } from '@threlte/core'
+	import { T } from '@threlte/core'
 </script>
 
 <T.Mesh>
-  <T.BoxGeometry />
-  <T.MeshStandardMaterial color="orange" />
+	<T.BoxGeometry />
+	<T.MeshStandardMaterial color="orange" />
 </T.Mesh>
 ```
 
@@ -57,15 +57,18 @@ This plugin preprocesses your Svelte components, transforming them from this:
 
 ```svelte
 <script>
-  import { Mesh as THRELTE_MINIFY__Mesh } from 'three'
-  import { BoxGeometry as THRELTE_MINIFY__BoxGeometry } from 'three'
-  import { MeshStandardMaterial as THRELTE_MINIFY__MeshStandardMaterial } from 'three'
-  import { T } from '@threlte/core'
+	import { Mesh as THRELTE_MINIFY__Mesh } from 'three'
+	import { BoxGeometry as THRELTE_MINIFY__BoxGeometry } from 'three'
+	import { MeshStandardMaterial as THRELTE_MINIFY__MeshStandardMaterial } from 'three'
+	import { T } from '@threlte/core'
 </script>
 
 <T is={THRELTE_MINIFY__Mesh}>
-  <T is={THRELTE_MINIFY__BoxGeometry} />
-  <T is={THRELTE_MINIFY__MeshStandardMaterial} color="orange" />
+	<T is={THRELTE_MINIFY__BoxGeometry} />
+	<T
+		is={THRELTE_MINIFY__MeshStandardMaterial}
+		color="orange"
+	/>
 </T>
 ```
 
