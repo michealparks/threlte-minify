@@ -1,15 +1,39 @@
 {
 	"name": "threlte-minify",
 	"version": "0.0.1",
-	"description": "A vite plugin to better minify Threlte apps.",
+	"description": "A Vite plugin that reduces bundle size for Threlte and Three.js applications through deep tree-shaking and minification.",
 	"keywords": [
-		"Threlte"
+		"vite",
+		"vite-plugin",
+		"threlte",
+		"three",
+		"threejs",
+		"three.js",
+		"svelte",
+		"minify",
+		"tree-shaking",
+		"bundle-size",
+		"optimization",
+		"3d",
+		"webgl"
 	],
+	"homepage": "https://github.com/michealparks/threlte-minify#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/michealparks/threlte-minify.git"
+	},
+	"bugs": {
+		"url": "https://github.com/michealparks/threlte-minify/issues"
+	},
 	"license": "MIT",
+	"sideEffects": false,
 	"author": {
 		"name": "Micheal Parks",
 		"email": "michealparks1989@gmail.com",
 		"url": "https://parks.lol"
+	},
+	"engines": {
+		"node": ">=18"
 	},
 	"exports": {
 		"import": "./plugin/index.js",
@@ -53,6 +77,9 @@
 		"typescript": "^5.4.5",
 		"vite": "^6.3.0",
 		"vitest": "^3.0.0"
+	},
+	"peerDependencies": {
+		"vite": ">=5.0.0"
 	},
 	"dependencies": {
 		"magic-string": "^0.30.10"
