@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { replaceDotComponents } from '../replaceDotComponents.js'
 
 describe('replaceDotComponents', () => {

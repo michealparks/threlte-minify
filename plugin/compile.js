@@ -1,6 +1,7 @@
 import MagicString from 'magic-string'
-import { insertImports } from './insertImports.js'
 import { parse, preprocess } from 'svelte/compiler'
+
+import { insertImports } from './insertImports.js'
 import { replaceDotComponents } from './replaceDotComponents.js'
 
 /**

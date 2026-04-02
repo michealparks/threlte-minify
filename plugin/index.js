@@ -1,4 +1,5 @@
 import MagicString from 'magic-string'
+
 import { compile } from './compile.js'
 import { hasDotComponent } from './hasDotComponent.js'
 

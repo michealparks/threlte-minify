@@ -1,6 +1,6 @@
 <script>
-	import { ContactShadows, Float, Grid, OrbitControls } from '@threlte/extras'
 	import { T } from '@threlte/core'
+	import { ContactShadows, Float, Grid, OrbitControls } from '@threlte/extras'
 </script>
 
 <T.PerspectiveCamera
