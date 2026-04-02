@@ -1,6 +1,6 @@
 {
 	"name": "threlte-minify",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "A Vite plugin that reduces bundle size for Threlte and Three.js applications through deep tree-shaking and minification.",
 	"keywords": [
 		"vite",
